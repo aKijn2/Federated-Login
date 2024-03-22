@@ -1,6 +1,9 @@
 var express = require("express");
 var passport = require("passport");
 var GoogleStrategy = require("passport-google-oidc");
+/**
+ * TODO: ordezkatu datu-basearen konexio-kode egokiarekin.
+ */
 var db = require("../db");
 
 passport.use(
@@ -11,6 +14,7 @@ passport.use(
       callbackURL: "/oauth2/redirect/google",
       scope: ["profile"],
     },
+
     function verify(issuer, profile, cb) {
       db.get(
         "SELECT * FROM federated_credentials WHERE provider = ? AND subject = ?",
@@ -83,6 +87,7 @@ var router = express.Router();
 router.get("/login", function (req, res, next) {
   res.render("login");
 });
+
 router.get("/login/federated/google", passport.authenticate("google"));
 router.get(
   "/oauth2/redirect/google",
